@@ -1,5 +1,7 @@
 from pathlib import Path
 from dotenv import load_dotenv
+
+
 import os
 
 load_dotenv()
@@ -20,6 +22,7 @@ INSTALLED_APPS = [
     # External Packages
     'rest_framework',
     # Internal Apps
+    'drfecommerce.product',
 ]
 
 MIDDLEWARE = [
