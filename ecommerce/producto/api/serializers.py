@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from producto.models import Producto,Categoria
+from django.shortcuts import get_object_or_404
 
 """
 class ProductoSerializer(serializers.Serializer):
@@ -43,7 +44,8 @@ class ProductoSerializer(serializers.ModelSerializer):
         instance.name = validate_data.get('name',instance.name)
         instance.price = validate_data.get('price',instance.price)
         instance.active = validate_data.get('active',instance.active)
-        instance.category = Categoria.objects.filter(name=validate_data['category']['name']).first()
+        category = get_object_or_404(Categoria, name = validate_data['category']['name'])
+        instance.category = category
         instance.save()
         return instance
 
