@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from producto.models import Producto,Categoria
 from django.shortcuts import get_object_or_404
+from django.core.exceptions import ValidationError
 
 """
 class ProductoSerializer(serializers.Serializer):
@@ -40,12 +41,17 @@ class ProductoSerializer(serializers.ModelSerializer):
         model = Producto
         fields = ['id', 'name','description','price','active','category','image']
     
+    def validate_category(self,data):
+        try:
+            return Categoria.objects.get(name=data['name'])
+        except Categoria.DoesNotExist:
+            raise ValidationError("La categoria no existe.")
+    
     def update(self,instance,validate_data):
         instance.name = validate_data.get('name',instance.name)
         instance.price = validate_data.get('price',instance.price)
         instance.active = validate_data.get('active',instance.active)
-        category = get_object_or_404(Categoria, name = validate_data['category']['name'])
-        instance.category = category
+        instance.category = validate_data['category']
         instance.save()
         return instance
 
