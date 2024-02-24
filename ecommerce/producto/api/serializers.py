@@ -33,17 +33,17 @@ class CategoriaSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
 class ProductoSerializer(serializers.ModelSerializer):
-    category = serializers.StringRelatedField()
+    category = CategoriaSerializer()
     image = serializers.ImageField(max_length=None, use_url=True, read_only=True)
     class Meta:
         model = Producto
-        fields = "__all__"
+        fields = ['id', 'name','description','price','active','category','image']
     
     def update(self,instance,validate_data):
         instance.name = validate_data.get('name',instance.name)
         instance.price = validate_data.get('price',instance.price)
         instance.active = validate_data.get('active',instance.active)
-        print(instance.category)
+        instance.category = Categoria.objects.filter(name=validate_data['category']['name']).first()
         instance.save()
         return instance
 
